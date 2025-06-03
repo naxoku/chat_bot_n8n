@@ -18,14 +18,17 @@ enviarBtn.addEventListener("click", () => {
   const mensaje = mensajeInput.value.trim();
   if (!mensaje) return;
 
-  // Mensaje usuario
+  // Mensaje del usuario
+  const userWrapper = document.createElement("div");
+  userWrapper.classList.add("message-wrapper", "user");
+
   const userMessage = document.createElement("div");
-  userMessage.classList.add("notification", "is-primary", "ml-auto", "mb-3");
-  userMessage.style.maxWidth = "70%"; // para no ocupar toda la línea
+  userMessage.classList.add("notification", "is-primary");
+  userMessage.style.maxWidth = "70%";
   userMessage.textContent = mensaje;
-  chatContainer.appendChild(userMessage);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-  mensajeInput.value = "";
+
+  userWrapper.appendChild(userMessage);
+  chatContainer.appendChild(userWrapper);
 
   // Fecha y hora
   const fecha = new Date().toLocaleDateString("es-CL");
@@ -41,13 +44,16 @@ enviarBtn.addEventListener("click", () => {
     .then((data) => {
       const respuesta = data.respuesta || "No hay respuesta disponible.";
 
-      // Mensaje bot
+      const botWrapper = document.createElement("div");
+      botWrapper.classList.add("message-wrapper");
+
       const botMessage = document.createElement("div");
-      botMessage.classList.add("notification", "is-light", "mb-3");
+      botMessage.classList.add("notification", "is-light");
       botMessage.style.maxWidth = "70%";
       botMessage.textContent = respuesta;
-      chatContainer.appendChild(botMessage);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      botWrapper.appendChild(botMessage);
+      chatContainer.appendChild(botWrapper);
     })
     .catch((err) => {
       console.error("Error:", err);
