@@ -7,13 +7,18 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <style>
       .chat-container {
         height: 70vh;
         overflow-y: auto;
-        border: 1px solid #dbdbdb;
-        padding: 1rem;
         background-color: #f5f5f5;
+        padding: 1rem;
+        border-radius: 6px;
       }
       .message {
         margin-bottom: 1rem;
@@ -24,6 +29,7 @@
     </style>
   </head>
   <body>
+    <!-- Navbar superior -->
     <nav
       class="navbar is-warning"
       role="navigation"
@@ -31,30 +37,214 @@
     >
       <div class="navbar-brand">
         <a class="navbar-item" href="#">
-          <img src="ing_civil-informatica_gris.png" />
+          <img src="ing_civil-informatica_gris.png" alt="Logo" />
           <span class="ml-2 has-text-weight-bold">Chatbot UCT</span>
         </a>
+        <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarBasic"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
 
-    </nav>
-
-    <!-- Chat -->
-    <div class="section">
-      <div class="box">
-        <div class="chat-container" id="chat">
-          <!-- Aquí se mostrarán los mensajes -->
+      <div id="navbarBasic" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="#">INICIO</a>
+          <a class="navbar-item" href="#">CALENDARIO</a>
+          <a class="navbar-item" href="#">EDUCA</a>
+          <a class="navbar-item" href="#">CREDENCIAL UNIVERSITARIA</a>
+          <a class="navbar-item" href="#">DGE</a>
+          <a class="navbar-item" href="#">ACOMPAÑAMIENTO DAAS</a>
+          <a class="navbar-item" href="#">DARA</a>
         </div>
-        <div class="field has-addons mt-3">
-          <div class="control is-expanded">
-            <input
-              id="mensajeInput"
-              class="input"
-              type="text"
-              placeholder="Escribe tu pregunta..."
-            />
-          </div>
-          <div class="control">
-            <button id="enviarBtn" class="button is-primary">Enviar</button>
-          </div>
+      </div>
+    </nav>
+    <!-- Contenedor principal -->
+    <div class="container mt-4">
+      <div class="columns">
+        <!-- Sidebar -->
+        <div class="column is-3 is-hidden-mobile">
+          <aside class="menu">
+            <!-- Asistente Virtual -->
+            <p class="menu-label">Asistente Virtual</p>
+            <ul class="menu-list">
+              <li>
+                <a
+                  class="box mb-2 has-background-link has-text-white has-shadow is-active"
+                >
+                  <span class="icon"><i class="fas fa-robot"></i></span>
+                  <strong>Chatbot UCT</strong>
+                  <p class="is-size-7 has-text-light">
+                    Haz tus consultas académicas al instante.
+                  </p>
+                </a>
+              </li>
+            </ul>
+
+            <!-- Vida Académica -->
+            <p class="menu-label">Vida Académica</p>
+            <ul class="menu-list">
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"><i class="fas fa-edit"></i></span>
+                  <strong>Solicitud Nota P</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Pide dejar una nota pendiente.
+                  </p>
+                </a>
+              </li>
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"><i class="fas fa-poll"></i></span>
+                  <strong>EODD Pregrado</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Evalúa el desempeño de tus docentes.
+                  </p>
+                </a>
+              </li>
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"><i class="fas fa-book"></i></span>
+                  <strong>Información Académica</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Consulta tu historial y cursos actuales.
+                  </p>
+                </a>
+              </li>
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"
+                    ><i class="fas fa-clipboard-list"></i
+                  ></span>
+                  <strong>Notas Parciales</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Revisa tus notas y asistencia.
+                  </p>
+                </a>
+              </li>
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"><i class="fas fa-eye"></i></span>
+                  <strong>Obs. Ficha Académica</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Observaciones académicas importantes.
+                  </p>
+                </a>
+              </li>
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"
+                    ><i class="fas fa-file-signature"></i
+                  ></span>
+                  <strong>Solicitudes Estudiantes</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Trámites como renuncia o reincorporación.
+                  </p>
+                </a>
+              </li>
+            </ul>
+
+            <!-- Bienestar y Finanzas -->
+            <p class="menu-label">Bienestar y Finanzas</p>
+            <ul class="menu-list">
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"><i class="fas fa-wallet"></i></span>
+                  <strong>Cuenta Corriente</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Pagos, beneficios y créditos.
+                  </p>
+                </a>
+              </li>
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"
+                    ><i class="fas fa-handshake-angle"></i
+                  ></span>
+                  <strong>Horas Asistente Social</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Agenda con tu asistente social.
+                  </p>
+                </a>
+              </li>
+            </ul>
+
+            <!-- Documentos y Certificados -->
+            <p class="menu-label">Documentos y Certificados</p>
+            <ul class="menu-list">
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"><i class="fas fa-file-alt"></i></span>
+                  <strong>Documentos</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Certificados, formularios y más.
+                  </p>
+                </a>
+              </li>
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"><i class="fas fa-certificate"></i></span>
+                  <strong>Certificado Académico</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Información de tus certificados.
+                  </p>
+                </a>
+              </li>
+            </ul>
+
+            <!-- Mi Información -->
+            <p class="menu-label">Mi Información</p>
+            <ul class="menu-list">
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <strong>Información Personal</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Actualiza tus datos y claves.
+                  </p>
+                </a>
+              </li>
+              <li>
+                <a class="box mb-2">
+                  <span class="icon"><i class="fas fa-book-reader"></i></span>
+                  <strong>Préstamos Biblioteca</strong>
+                  <p class="is-size-7 has-text-grey">
+                    Revisa tus préstamos y deudas.
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </aside>
+        </div>
+
+        <!-- Chat principal -->
+        <div class="column is-12-mobile is-9-tablet is-9-desktop">
+          <section class="section">
+            <div class="box">
+              <div class="chat-container" id="chat"></div>
+              <div class="field has-addons mt-3">
+                <div class="control is-expanded">
+                  <input
+                    id="mensajeInput"
+                    class="input"
+                    type="text"
+                    placeholder="Escribe tu pregunta..."
+                  />
+                </div>
+                <div class="control">
+                  <button id="enviarBtn" class="button is-primary">
+                    Enviar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
