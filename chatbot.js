@@ -2,7 +2,6 @@ const chatContainer = document.getElementById("chat");
 const mensajeInput = document.getElementById("mensajeInput");
 const enviarBtn = document.getElementById("enviarBtn");
 
-// Menu contraible del navbar
 document.addEventListener("DOMContentLoaded", () => {
   const burger = document.querySelector(".navbar-burger");
   const menu = document.getElementById(burger.dataset.target);
@@ -13,8 +12,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Mensajes del chatbot
-enviarBtn.addEventListener("click", () => {
+// Permitir enviar con Enter
+mensajeInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    enviarMensaje();
+  }
+});
+
+enviarBtn.addEventListener("click", enviarMensaje);
+
+function enviarMensaje() {
   const mensaje = mensajeInput.value.trim();
   if (!mensaje) return;
 
@@ -29,12 +36,14 @@ enviarBtn.addEventListener("click", () => {
 
   userWrapper.appendChild(userMessage);
   chatContainer.appendChild(userWrapper);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+
+  mensajeInput.value = ""; // Borra el input
 
   // Fecha y hora
   const fecha = new Date().toLocaleDateString("es-CL");
   const hora = new Date().toLocaleTimeString("es-CL");
 
-  // Petición POST al webhook de N8N
   fetch("https://skynet.uct.cl/webhook/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -48,20 +57,26 @@ enviarBtn.addEventListener("click", () => {
       botWrapper.classList.add("message-wrapper");
 
       const botMessage = document.createElement("div");
-      botMessage.classList.add("notification", "is-light");
+      botMessage.classList.add("notification", "is-info"); // 💡 Color más visible
       botMessage.style.maxWidth = "70%";
       botMessage.textContent = respuesta;
 
       botWrapper.appendChild(botMessage);
       chatContainer.appendChild(botWrapper);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
     })
     .catch((err) => {
       console.error("Error:", err);
+      const errorWrapper = document.createElement("div");
+      errorWrapper.classList.add("message-wrapper");
+
       const errorMessage = document.createElement("div");
-      errorMessage.classList.add("notification", "is-danger", "mb-3");
+      errorMessage.classList.add("notification", "is-danger");
       errorMessage.style.maxWidth = "70%";
       errorMessage.textContent = "Error al conectar con el servidor.";
-      chatContainer.appendChild(errorMessage);
+
+      errorWrapper.appendChild(errorMessage);
+      chatContainer.appendChild(errorWrapper);
       chatContainer.scrollTop = chatContainer.scrollHeight;
     });
-});
+}
