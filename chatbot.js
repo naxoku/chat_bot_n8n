@@ -97,7 +97,7 @@ function enviarMensaje() {
   historial.push({ role: "user", content: mensaje });
 
   // Enviar todo al backend
-  fetch("https://skynet.uct.cl/webhook-test/chat", {
+  fetch("https://skynet.uct.cl/webhook/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ pregunta: mensaje, fecha, hora, historial }),
