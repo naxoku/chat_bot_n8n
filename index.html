@@ -16,7 +16,6 @@
     />
 
     <style>
-      /* Estilos generales para el cuerpo y transiciones de modo */
       html, body {
         height: 100%;
         margin: 0;
@@ -25,7 +24,6 @@
         background-color: #e9ecef; /* Un gris muy clarito, pero más evidente que el blanco */
         color: #363636;
         transition: background-color 0.3s ease, color 0.3s ease;
-        font-family: 'Inter', sans-serif; /* Usando Inter para todas las fuentes */
       }
 
       /* Estilos para el modo oscuro */
@@ -34,72 +32,48 @@
         color: #f0f0f0;
       }
 
-      /* Navbar superior */
       .navbar {
         flex-shrink: 0;
       }
       .navbar.is-warning.dark-mode {
-        background-color: #4a4a4a !important; /* Navbar oscura en modo oscuro */
+        background-color: #4a4a4a !important;
         color: #f0f0f0;
       }
       .navbar.is-warning .navbar-item.has-text-weight-bold {
-        color: #363636; /* Color de texto original de la navbar warning */
+        color: #363636;
       }
       .navbar.is-warning.dark-mode .navbar-item.has-text-weight-bold {
-        color: #f0f0f0; /* Texto claro en navbar oscura */
+        color: #f0f0f0;
       }
 
-      /* Contenedor principal del widget flotante */
-      .chatbot-widget-container {
-        position: fixed; /* Fijo en la pantalla */
-        bottom: 20px; /* Distancia desde abajo */
-        right: 20px; /* Distancia desde la derecha */
-        z-index: 1000; /* Para que esté por encima de otros elementos */
+
+      .main-content {
+        flex-grow: 1;
         display: flex;
-        flex-direction: column; /* Apila el botón y el chat */
-        align-items: flex-end; /* Alinea el botón y chat a la derecha */
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
       }
 
-      /* Botón para abrir/cerrar el chatbot */
-      .chatbot-toggle-button {
-        margin-bottom: 15px; /* Espacio entre el botón y el chat */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para que se vea flotante */
-      }
-
-      /* Contenedor del chat principal (el que se despliega) */
       .chat-box-container {
         width: 100%;
-        max-width: 750px; /* CAMBIO AQUI: ¡Aún más ancho para que se note! */
-        height: 0; /* Inicialmente oculto */
-        opacity: 0; /* Inicialmente transparente */
-        transform: scale(0.8); /* Inicialmente más pequeño para el efecto "kawaii" */
-        transform-origin: bottom right; /* Origen de la transformación desde abajo a la derecha */
-        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Transición suave y elástica */
-        pointer-events: none; /* No interactuable cuando está oculto */
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada al abrir */
-        border-radius: 8px;
+        max-width: 768px;
+        height: 80vh;
         display: flex;
         flex-direction: column;
-        overflow: hidden; /* Para que el contenido del chat no se salga */
-        background-color: #f8f9fa; /* Fondo del chat en modo claro */
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        background-color: #f8f9fa; /* Otro gris muy clarito, casi blanco, pero no puro */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
       }
 
-      /* Estado cuando el chat está abierto */
-      .chat-box-container.is-open {
-        height: 60vh; /* Altura completa del chat, ajustada para widget */
-        opacity: 1; /* Completamente visible */
-        transform: scale(1); /* Tamaño normal */
-        pointer-events: auto; /* Interactuable */
-      }
-
-      /* Estilos de modo oscuro para el contenedor del chat */
       .chat-box-container.dark-mode {
-        background-color: #3a3f4a; /* Fondo oscuro del chat */
+        background-color: #3a3f4a;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       }
 
 
-      /* Contenedor de mensajes dentro del chat */
       .chat-container {
         flex-grow: 1;
         overflow-y: auto;
@@ -112,7 +86,6 @@
         background-color: #2f333a;
       }
 
-      /* Estilos de las burbujas de mensaje */
       .message-wrapper {
         display: flex;
         margin-bottom: 0.75rem;
@@ -125,9 +98,9 @@
       .notification {
         padding: 0.75rem 1rem;
         border-radius: 20px;
-        max-width: 75%; /* Las burbujas de mensaje ocupan hasta el 75% del ancho del chat */
+        max-width: 75%;
         word-wrap: break-word;
-        font-size: 0.95rem; /* Tamaño de fuente de los mensajes */
+        font-size: 0.95rem;
       }
 
       /* Estilos para los mensajes en modo claro */
@@ -146,23 +119,23 @@
         color: white;
       }
 
-      /* Estilos para los mensajes en modo oscuro */
+      /* CAMBIO AQUI: Estilos para los mensajes en modo oscuro */
       .notification.is-primary.dark-mode { /* Mensaje de usuario en modo oscuro (verde más oscuro) */
-        background-color: #2e8b57;
+        background-color: #2e8b57; /* Un verde más oscuro y profundo */
       }
       .notification.is-info.dark-mode { /* Mensaje de bot en modo oscuro (azul más oscuro) */
-        background-color: #2a6592;
+        background-color: #2a6592; /* Un azul más oscuro y profundo */
       }
       .notification.is-danger.dark-mode { /* Mensaje de error en modo oscuro (rojo más oscuro) */
-        background-color: #cc294d;
+        background-color: #cc294d; /* Un rojo más oscuro */
       }
+      /* Fin CAMBIO AQUI */
 
 
-      /* Área de input del mensaje */
       .chat-input-area {
         flex-shrink: 0;
         padding: 1rem;
-        background-color: #ffffff; /* Fondo del área de input en modo claro */
+        background-color: #ffffff;
         border-top: 1px solid #eee;
         transition: background-color 0.3s ease, border-top-color 0.3s ease;
       }
@@ -173,51 +146,28 @@
       }
 
       .chat-input-area.dark-mode .input {
-        background-color: #4a4f58; /* Fondo del input en modo oscuro */
+        background-color: #4a4f58;
         border-color: #555c66;
-        color: #f0f0f0; /* Texto del input claro */
+        color: #f0f0f0;
       }
       .chat-input-area.dark-mode .input::placeholder {
-        color: #cccccc; /* Placeholder más claro */
+        color: #cccccc;
       }
       .chat-input-area.dark-mode .button.is-primary {
         background-color: #5b87e2;
         border-color: #5b87e2;
       }
 
-      /* Estilo para el botón de modo oscuro en la navbar */
       .mode-toggle {
         cursor: pointer;
         padding: 0.5rem;
         border-radius: 4px;
         margin-left: 1rem;
       }
-
-      /* Ajuste de tamaño de fuente para el input y botón */
-      .input.is-medium, .button.is-medium {
-        font-size: 0.95rem; /* Un poco más pequeño para que no se vea "guatón" */
-      }
-
-      /* Asegurar que todas las fuentes usen Inter */
-      body, .navbar, .chat-box-container, .input, .button, .notification {
-        font-family: 'Inter', sans-serif;
-      }
-
-      /* Media query para pantallas más pequeñas (móviles) */
-      @media (max-width: 768px) {
-        .chat-box-container {
-          max-width: 95vw; /* Ocupa casi todo el ancho de la pantalla en móviles */
-          right: 2.5vw; /* Ajusta la posición para que quede centrada */
-          left: 2.5vw;
-        }
-      }
-
     </style>
-    <!-- Agrega la fuente Inter de Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
-    <!-- Navbar superior -->
+    <!-- Navbar superior con botón de modo oscuro -->
     <nav class="navbar is-warning" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="#">
@@ -252,17 +202,9 @@
       </div>
     </nav>
 
-    <!-- Contenedor del chatbot flotante -->
-    <div class="chatbot-widget-container">
-      <!-- Botón para abrir/cerrar el chatbot -->
-      <button class="button is-primary is-large is-rounded chatbot-toggle-button" id="chatbotToggle">
-        <span class="icon">
-          <i class="fas fa-comment-dots"></i> <!-- Icono de chat -->
-        </span>
-      </button>
-
-      <!-- Contenedor del chat principal (el que ya tenemos) -->
-      <div class="chat-box-container" id="chatWidget">
+    <!-- Contenedor principal para centrar el chat -->
+    <div class="main-content">
+      <div class="chat-box-container">
         <!-- Contenedor del chat (donde aparecen los mensajes) -->
         <div class="chat-container" id="chat">
           <!-- Los mensajes se agregarán aquí dinámicamente -->
