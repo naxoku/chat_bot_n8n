@@ -2,58 +2,192 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Chatbot UCT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot UCT - Tu Asistente Virtual</title>
+    <!-- Bulma CSS -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
     />
+    <!-- Font Awesome para los íconos -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
 
     <style>
-      .chat-container {
-        height: 70vh;
-        overflow-y: auto;
-        background-color: #f5f5f5;
+      html, body {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        background-color: #e9ecef; /* Un gris muy clarito, pero más evidente que el blanco */
+        color: #363636;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      /* Estilos para el modo oscuro */
+      html.dark-mode, body.dark-mode {
+        background-color: #282c34;
+        color: #f0f0f0;
+      }
+
+      .navbar {
+        flex-shrink: 0;
+      }
+      .navbar.is-warning.dark-mode {
+        background-color: #4a4a4a !important;
+        color: #f0f0f0;
+      }
+      .navbar.is-warning .navbar-item.has-text-weight-bold {
+        color: #363636;
+      }
+      .navbar.is-warning.dark-mode .navbar-item.has-text-weight-bold {
+        color: #f0f0f0;
+      }
+
+
+      .main-content {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 1rem;
-        border-radius: 6px;
       }
-      .message {
-        margin-bottom: 1rem;
+
+      .chat-box-container {
+        width: 100%;
+        max-width: 768px;
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        background-color: #f8f9fa; /* Otro gris muy clarito, casi blanco, pero no puro */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
       }
-      .message.user {
-        text-align: right;
+
+      .chat-box-container.dark-mode {
+        background-color: #3a3f4a;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       }
+
+
+      .chat-container {
+        flex-grow: 1;
+        overflow-y: auto;
+        background-color: #eef1f4; /* Un gris claro para el fondo del chat */
+        padding: 1rem;
+        transition: background-color 0.3s ease;
+      }
+
+      .chat-container.dark-mode {
+        background-color: #2f333a;
+      }
+
       .message-wrapper {
         display: flex;
-        justify-content: flex-start;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
       }
 
       .message-wrapper.user {
         justify-content: flex-end;
       }
+
+      .notification {
+        padding: 0.75rem 1rem;
+        border-radius: 20px;
+        max-width: 75%;
+        word-wrap: break-word;
+        font-size: 0.95rem;
+      }
+
+      /* Estilos para los mensajes en modo claro */
+      .notification.is-primary { /* Mensaje de usuario (verde) */
+        background-color: #48c78e;
+        color: white;
+      }
+
+      .notification.is-info { /* Mensaje de bot (azul) */
+        background-color: #3e8ed0;
+        color: white;
+      }
+
+      .notification.is-danger { /* Mensaje de error (rojo) */
+        background-color: #ff3860;
+        color: white;
+      }
+
+      /* CAMBIO AQUI: Estilos para los mensajes en modo oscuro */
+      .notification.is-primary.dark-mode { /* Mensaje de usuario en modo oscuro (verde más oscuro) */
+        background-color: #2e8b57; /* Un verde más oscuro y profundo */
+      }
+      .notification.is-info.dark-mode { /* Mensaje de bot en modo oscuro (azul más oscuro) */
+        background-color: #2a6592; /* Un azul más oscuro y profundo */
+      }
+      .notification.is-danger.dark-mode { /* Mensaje de error en modo oscuro (rojo más oscuro) */
+        background-color: #cc294d; /* Un rojo más oscuro */
+      }
+      /* Fin CAMBIO AQUI */
+
+
+      .chat-input-area {
+        flex-shrink: 0;
+        padding: 1rem;
+        background-color: #ffffff;
+        border-top: 1px solid #eee;
+        transition: background-color 0.3s ease, border-top-color 0.3s ease;
+      }
+
+      .chat-input-area.dark-mode {
+        background-color: #3a3f4a;
+        border-top-color: #4a4a4a;
+      }
+
+      .chat-input-area.dark-mode .input {
+        background-color: #4a4f58;
+        border-color: #555c66;
+        color: #f0f0f0;
+      }
+      .chat-input-area.dark-mode .input::placeholder {
+        color: #cccccc;
+      }
+      .chat-input-area.dark-mode .button.is-primary {
+        background-color: #5b87e2;
+        border-color: #5b87e2;
+      }
+
+      .mode-toggle {
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 4px;
+        margin-left: 1rem;
+      }
     </style>
   </head>
   <body>
-    <!-- Navbar superior -->
-    <nav
-      class="navbar is-warning"
-      role="navigation"
-      aria-label="main navigation"
-    >
+    <!-- Navbar superior con botón de modo oscuro -->
+    <nav class="navbar is-warning" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="#">
-          <img src="ing_civil-informatica_gris.png" alt="Logo" />
+          <img src="ing_civil-informatica_gris.png" alt="Logo UCT" style="max-height: 2.25rem;">
+        </a>
+        <a class="navbar-item is-size-5 has-text-weight-bold">
+          Asistente UCT
+        </a>
+        <!-- Botón para alternar modo oscuro -->
+        <a class="navbar-item mode-toggle" id="modeToggle">
+          <span class="icon is-large">
+            <i class="fas fa-moon"></i> <!-- Ícono de luna para modo oscuro -->
+          </span>
         </a>
         <a
           role="button"
           class="navbar-burger"
           aria-label="menu"
           aria-expanded="false"
-          data-target="navbarBasic"
+          data-target="navbarMenu"
         >
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -61,202 +195,46 @@
         </a>
       </div>
 
-      <div id="navbarBasic" class="navbar-menu">
+      <div id="navbarMenu" class="navbar-menu">
         <div class="navbar-start">
-          <a class="navbar-item" href="#">INICIO</a>
-          <a class="navbar-item" href="#">CALENDARIO</a>
-          <a class="navbar-item" href="#">EDUCA</a>
-          <a class="navbar-item" href="#">CREDENCIAL UNIVERSITARIA</a>
-          <a class="navbar-item" href="#">DGE</a>
-          <a class="navbar-item" href="#">ACOMPAÑAMIENTO DAAS</a>
-          <a class="navbar-item" href="#">DARA</a>
+          <!-- Ítems del navbar si los quieres de vuelta -->
         </div>
       </div>
     </nav>
-    <!-- Contenedor principal -->
-    <div class="container mt-4">
-      <div class="columns">
-        <!-- Sidebar -->
-        <div class="column is-3 is-hidden-mobile">
-          <aside class="menu">
-            <!-- Asistente Virtual -->
-            <p class="menu-label">Asistente Virtual</p>
-            <ul class="menu-list">
-              <li>
-                <a
-                  class="box mb-2 has-background-link has-text-white has-shadow is-active"
-                >
-                  <span class="icon"><i class="fas fa-robot"></i></span>
-                  <strong>Chatbot UCT</strong>
-                  <p class="is-size-7 has-text-light">
-                    Haz tus consultas académicas al instante.
-                  </p>
-                </a>
-              </li>
-            </ul>
 
-            <!-- Vida Académica -->
-            <p class="menu-label">Vida Académica</p>
-            <ul class="menu-list">
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"><i class="fas fa-edit"></i></span>
-                  <strong>Solicitud Nota P</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Pide dejar una nota pendiente.
-                  </p>
-                </a>
-              </li>
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"><i class="fas fa-poll"></i></span>
-                  <strong>EODD Pregrado</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Evalúa el desempeño de tus docentes.
-                  </p>
-                </a>
-              </li>
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"><i class="fas fa-book"></i></span>
-                  <strong>Información Académica</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Consulta tu historial y cursos actuales.
-                  </p>
-                </a>
-              </li>
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"
-                    ><i class="fas fa-clipboard-list"></i
-                  ></span>
-                  <strong>Notas Parciales</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Revisa tus notas y asistencia.
-                  </p>
-                </a>
-              </li>
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"><i class="fas fa-eye"></i></span>
-                  <strong>Obs. Ficha Académica</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Observaciones académicas importantes.
-                  </p>
-                </a>
-              </li>
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"
-                    ><i class="fas fa-file-signature"></i
-                  ></span>
-                  <strong>Solicitudes Estudiantes</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Trámites como renuncia o reincorporación.
-                  </p>
-                </a>
-              </li>
-            </ul>
-
-            <!-- Bienestar y Finanzas -->
-            <p class="menu-label">Bienestar y Finanzas</p>
-            <ul class="menu-list">
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"><i class="fas fa-wallet"></i></span>
-                  <strong>Cuenta Corriente</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Pagos, beneficios y créditos.
-                  </p>
-                </a>
-              </li>
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"
-                    ><i class="fas fa-handshake-angle"></i
-                  ></span>
-                  <strong>Horas Asistente Social</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Agenda con tu asistente social.
-                  </p>
-                </a>
-              </li>
-            </ul>
-
-            <!-- Documentos y Certificados -->
-            <p class="menu-label">Documentos y Certificados</p>
-            <ul class="menu-list">
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"><i class="fas fa-file-alt"></i></span>
-                  <strong>Documentos</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Certificados, formularios y más.
-                  </p>
-                </a>
-              </li>
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"><i class="fas fa-certificate"></i></span>
-                  <strong>Certificado Académico</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Información de tus certificados.
-                  </p>
-                </a>
-              </li>
-            </ul>
-
-            <!-- Mi Información -->
-            <p class="menu-label">Mi Información</p>
-            <ul class="menu-list">
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"><i class="fas fa-user"></i></span>
-                  <strong>Información Personal</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Actualiza tus datos y claves.
-                  </p>
-                </a>
-              </li>
-              <li>
-                <a class="box mb-2">
-                  <span class="icon"><i class="fas fa-book-reader"></i></span>
-                  <strong>Préstamos Biblioteca</strong>
-                  <p class="is-size-7 has-text-grey">
-                    Revisa tus préstamos y deudas.
-                  </p>
-                </a>
-              </li>
-            </ul>
-          </aside>
+    <!-- Contenedor principal para centrar el chat -->
+    <div class="main-content">
+      <div class="chat-box-container">
+        <!-- Contenedor del chat (donde aparecen los mensajes) -->
+        <div class="chat-container" id="chat">
+          <!-- Los mensajes se agregarán aquí dinámicamente -->
         </div>
 
-        <!-- Chat principal -->
-        <div class="column is-12-mobile is-9-tablet is-9-desktop">
-          <section class="section">
-            <div class="box">
-              <div class="chat-container" id="chat"></div>
-              <div class="field has-addons mt-3">
-                <div class="control is-expanded">
-                  <input
-                    id="mensajeInput"
-                    class="input"
-                    type="text"
-                    placeholder="Escribe tu pregunta..."
-                  />
-                </div>
-                <div class="control">
-                  <button id="enviarBtn" class="button is-primary">
-                    Enviar
-                  </button>
-                </div>
-              </div>
+        <!-- Área de input del mensaje -->
+        <div class="chat-input-area">
+          <div class="field has-addons">
+            <div class="control is-expanded">
+              <input
+                id="mensajeInput"
+                class="input is-medium is-rounded"
+                type="text"
+                placeholder="Escribe tu pregunta aquí..."
+              />
             </div>
-          </section>
+            <div class="control">
+              <button id="enviarBtn" class="button is-primary is-medium is-rounded">
+                <span class="icon">
+                  <i class="fas fa-paper-plane"></i>
+                </span>
+                <span>Enviar</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Tu archivo JavaScript -->
     <script src="chatbot.js"></script>
   </body>
 </html>
