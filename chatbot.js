@@ -2,8 +2,8 @@ const chatContainer = document.getElementById("chat");
 const mensajeInput = document.getElementById("mensajeInput");
 const enviarBtn = document.getElementById("enviarBtn");
 const modeToggle = document.getElementById("modeToggle");
-const chatbotToggle = document.getElementById("chatbotToggle"); // Nuevo: botón flotante
-const chatWidget = document.getElementById("chatWidget"); // Nuevo: contenedor del widget
+const chatbotToggle = document.getElementById("chatbotToggle"); // Botón flotante
+const chatWidget = document.getElementById("chatWidget"); // Contenedor del widget
 const navbar = document.querySelector('.navbar');
 const chatInputArea = document.querySelector('.chat-input-area');
 
@@ -18,45 +18,6 @@ function applyChatDarkMode(isDarkModeEnabled) {
     document.querySelectorAll('.notification.is-danger').forEach(msg => msg.classList.toggle('dark-mode', isDarkModeEnabled));
   }
 }
-
-// NUEVA FUNCIÓN: Formatea el texto plano del bot a HTML (respetando saltos de línea y listas)
-function formatBotResponseAsHtml(text) {
-    // Primero, escapa caracteres HTML para prevenir XSS y asegurar que el texto sea seguro
-    let html = text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-
-    // Divide el texto en párrafos usando doble salto de línea
-    const paragraphs = html.split('\n\n');
-    let formattedHtml = [];
-
-    paragraphs.forEach(paragraph => {
-        // Si el párrafo es una lista (empieza con un guion), lo procesa como lista
-        if (paragraph.trim().startsWith('- ')) {
-            const listItems = paragraph.split('\n').map(line => {
-                if (line.trim().startsWith('- ')) {
-                    return '<li>' + line.trim().substring(2).trim() + '</li>';
-                }
-                return ''; // Ignora líneas que no son ítems de lista dentro de un bloque de lista
-            }).filter(item => item !== '').join(''); // Filtra vacíos
-            if (listItems) {
-                formattedHtml.push('<ul>' + listItems + '</ul>');
-            }
-        } else {
-            // Si no es una lista, lo procesa como párrafo normal, reemplazando saltos de línea simples por <br>
-            const pContent = paragraph.replace(/\n/g, '<br>').trim();
-            if (pContent) { // Solo si no está vacío
-                formattedHtml.push('<p>' + pContent + '</p>');
-            }
-        }
-    });
-
-    return formattedHtml.join('');
-}
-
 
 document.addEventListener("DOMContentLoaded", () => {
   const burger = document.querySelector(".navbar-burger");
@@ -138,6 +99,44 @@ chatbotToggle.addEventListener("click", () => {
   }
 });
 
+// NUEVA FUNCIÓN: Formatea el texto plano del bot a HTML (respetando saltos de línea y listas)
+function formatBotResponseAsHtml(text) {
+    // Primero, escapa caracteres HTML para prevenir XSS y asegurar que el texto sea seguro
+    let html = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    // Divide el texto en párrafos usando doble salto de línea
+    const paragraphs = html.split('\n\n');
+    let formattedHtml = [];
+
+    paragraphs.forEach(paragraph => {
+        // Si el párrafo es una lista (empieza con un guion), lo procesa como lista
+        if (paragraph.trim().startsWith('- ')) {
+            const listItems = paragraph.split('\n').map(line => {
+                if (line.trim().startsWith('- ')) {
+                    return '<li>' + line.trim().substring(2).trim() + '</li>';
+                }
+                return ''; // Ignora líneas que no son ítems de lista dentro de un bloque de lista
+            }).filter(item => item !== '').join(''); // Filtra vacíos
+            if (listItems) {
+                formattedHtml.push('<ul>' + listItems + '</ul>');
+            }
+        } else {
+            // Si no es una lista, lo procesa como párrafo normal, reemplazando saltos de línea simples por <br>
+            const pContent = paragraph.replace(/\n/g, '<br>').trim();
+            if (pContent) { // Solo si no está vacío
+                formattedHtml.push('<p>' + pContent + '</p>');
+            }
+        }
+    });
+
+    return formattedHtml.join('');
+}
+
 
 function enviarMensaje() {
   const mensaje = mensajeInput.value.trim();
@@ -173,7 +172,8 @@ function enviarMensaje() {
   historial.push({ role: "user", content: mensaje });
 
   // Enviar todo al backend
-  fetch("https://skynet.uct.cl/webhook/chat", { // Asegúrate de que esta URL sea la correcta (test o prod)
+  // CAMBIO AQUI: Usar la URL de producción para el webhook
+  fetch("https://skynet.uct.cl/webhook/chat", { 
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ pregunta: mensaje, fecha, hora, historial }),
@@ -188,7 +188,7 @@ function enviarMensaje() {
       const botMessage = document.createElement("div");
       botMessage.classList.add("notification", "is-info");
       botMessage.style.maxWidth = "70%";
-      // CAMBIO AQUI: Usar innerHTML y la nueva función para formatear la respuesta del bot
+      // Usar innerHTML y la función para formatear la respuesta del bot
       botMessage.innerHTML = formatBotResponseAsHtml(respuesta);
       // Añadir la clase dark-mode si está activado
       if (document.documentElement.classList.contains('dark-mode')) {
